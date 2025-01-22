@@ -93,18 +93,20 @@ Para executar o projeto, você pode seguir os passos abaixo:
    ```bash
    npm install
 
-   npm run start:angular
+   npm run start
    ```
 
 3. **Iniciar o Microfrontend Vue**:
    ```bash
    npm install
 
-   npm run start:vue
+   npm run start
    ```
 
 ## Estrutura de Diretórios
+```
 microfrontends-demo/
 ├── root-app/ # Aplicativo principal
 ├── angular-app/ # Microfrontend Angular
 └── vue-app/ # Microfrontend Vue
+````
