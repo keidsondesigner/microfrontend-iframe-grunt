@@ -1,0 +1,15 @@
+{
+  "name": "microfrontends-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "grunt serve",
+    "start:angular": "cd angular-app && npm start",
+    "start:vue": "cd vue-app && npm run serve"
+  },
+  "devDependencies": {
+    "grunt": "^1.6.1",
+    "grunt-contrib-connect": "^4.0.0",
+    "grunt-contrib-watch": "^1.1.0",
+    "load-grunt-tasks": "^5.1.0"
+  }
+}

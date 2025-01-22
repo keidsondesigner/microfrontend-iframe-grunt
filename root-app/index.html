@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microfrontends Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .frame {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Microfrontends Demo</h1>
+        
+        <h2>Angular App</h2>
+        <iframe src="http://localhost:4200" class="frame" id="angularApp"></iframe>
+        
+        <h2>Vue App</h2>
+        <iframe src="http://localhost:5174" class="frame" id="vueApp"></iframe>
+    </div>
+
+    <script>
+        class AppConfig {
+            constructor() {
+                this.theme = 'light';
+                this.apiUrl = 'https://api.example.com';
+                this.features = {
+                    darkMode: true,
+                    notifications: true
+                };
+                this.user = {
+                    id: 1,
+                    name: 'John Doe',
+                    role: 'admin'
+                };
+            }
+
+            getConfig() {
+                return {
+                    theme: this.theme,
+                    apiUrl: this.apiUrl,
+                    features: this.features,
+                    user: this.user
+                };
+            }
+
+            updateTheme(newTheme) {
+                this.theme = newTheme;
+                console.log("atualziando thema PAI")
+            }
+
+            addFeature(featureName, isEnabled) {
+                this.features[featureName] = isEnabled;
+            }
+
+
+            updateUser(newUser) {
+                this.user = { ...this.user, ...newUser };
+            }
+        }
+
+        // Cria instância da Class AppConfig
+        const appConfig = new AppConfig();
+
+        // Enviar a "config" para o filho aplicação Angular, quando esta é carregada.
+        document.getElementById('angularApp').onload = function() {
+            const angularApp = document.getElementById('angularApp');
+            angularApp.contentWindow.postMessage({
+                type: 'config',
+                data: appConfig.getConfig()
+            }, '*');
+        };
+
+        // Escuta as mensagens dos iframes(filhos) Angular, Vue
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'dipararUpdateTheme') {
+                // Atualiza a configuração do tema no aplicativo pai
+                appConfig.updateTheme(event.data.newTheme); // Atualiza o tema no objeto de configuração
+
+                // Envia a nova configuração de volta para o Angular, depois que o root recebeu a alteração.
+                const angularApp = document.getElementById('angularApp');
+                angularApp.contentWindow.postMessage({
+                    type: 'config',
+                    data: appConfig.getConfig() // Envia a configuração atualizada
+                }, '*');
+            }
+        });
+    </script>
+</body>
+</html>
